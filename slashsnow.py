@@ -2,13 +2,20 @@ from flask import Flask, request
 from create_incident import create_incident
 import get_user_id
 import os
+import yaml
 
 app = Flask(__name__)
 
 @app.route('/ticket', methods=['POST'])
 def ticket():
+
+    conf_file = os.path.expanduser('~/snowconfig.yaml')
+    with open(conf_file,'r') as ymlfile:
+        cfg = yaml.load(ymlfile)
+        auth_token = str(cfg['ticket']['auth'])
+
     token = request.form['token']
-    if 'A7zfgcg4hXw49CkGDhlph4Sd' not in token:
+    if auth_token not in token:
         abort(403)
     slack_user = request.form['user_id']
     task_for = get_user_id.get_snow_uid(get_user_id.get_user_id(slack_user))
@@ -18,8 +25,14 @@ def ticket():
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
+
+    conf_file = os.path.expanduser('~/snowconfig.yaml')
+    with open(conf_file,'r') as ymlfile:
+        cfg = yaml.load(ymlfile)
+        auth_token = str(cfg['test']['auth'])
+
     token = request.form['token']
-    if '3tBQjvHmvHuJIzN8qYlQjnze' not in token:
+    if auth_token not in token:
         abort(403)
     user_info = request.form
     return repr(user_info)
