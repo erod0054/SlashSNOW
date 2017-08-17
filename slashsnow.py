@@ -7,12 +7,12 @@ import yaml
 app = Flask(__name__)
 
 @app.route('/ticket', methods=['POST'])
-def ticket():
+def rackerex_ticket():
 
     conf_file = os.path.expanduser('~/snowconfig.yaml')
     with open(conf_file,'r') as ymlfile:
         cfg = yaml.load(ymlfile)
-        auth_token = str(cfg['ticket']['auth'])
+        auth_token = str(cfg['rackerex']['auth'])
 
     token = request.form['token']
     if auth_token not in token:
@@ -20,7 +20,26 @@ def ticket():
     slack_user = request.form['user_id']
     task_for = get_user_id.get_snow_uid(get_user_id.get_user_id(slack_user))
     short_desc = request.form['text']
-    incident = create_incident(task_for, short_desc)
+    queue = 'Racker Experience'
+    incident = create_incident(task_for, short_desc, queue)
+    return incident
+
+@app.route('/asops', methods=['POST'])
+def asops_ticket():
+
+    conf_file = os.path.expanduser('~/snowconfig.yaml')
+    with open(conf_file,'r') as ymlfile:
+        cfg = yaml.load(ymlfile)
+        auth_token = str(cfg['asops']['auth'])
+
+    token = request.form['token']
+    if auth_token not in token:
+        abort(403)
+    slack_user = request.form['user_id']
+    task_for = get_user_id.get_snow_uid(get_user_id.get_user_id(slack_user))
+    short_desc = request.form['text']
+    queue = 'ASOPS'
+    incident = create_incident(task_for, short_desc, queue)
     return incident
 
 @app.route('/test', methods=['GET', 'POST'])

@@ -10,28 +10,42 @@ import time
 from ConfigParser import SafeConfigParser
 from pprint import pprint as pp
 
-def create_incident(task_for, short_desc):
+def create_incident(task_for, short_desc, queue):
 
     time_now = int(time.time())
     #Import SNOW user credentials from config.yaml
     conf_file = os.path.expanduser('~/snowconfig.yaml')
     with open(conf_file,'r') as ymlfile:
         cfg = yaml.load(ymlfile)
-        user = str(cfg['production']['user'])
-        pwd = base64.b64decode(str(cfg['production']['passwd']))
 
-    short_desc = short_desc
-    opened_for = task_for
-    category = 'inc_rackspace'
-    sub_category = 'inc_change_service'
-    sub_subcategory = 'inc_system_issue'
-    #assignment_group = 'GET Ops Tier1'
-    assignment_group = 'Racker Experience'
-    #inc_num = short_desc.split(' ')[1]
-    contact_type = 'Other'
-    other = 'Slack ticket'
-    urgency = '2'
-    impact = '2'
+        if 'Racker Experience' in queue:
+            user = str(cfg['rackerex']['user'])
+            pwd = base64.b64decode(str(cfg['rackerex']['passwd']))
+            short_desc = short_desc
+            opened_for = task_for
+            category = 'inc_rackspace'
+            sub_category = 'inc_change_service'
+            sub_subcategory = 'inc_system_issue'
+            assignment_group = 'Racker Experience'
+            contact_type = 'Other'
+            other = 'Slack ticket'
+            urgency = '2'
+            impact = '2'
+
+        elif 'ASOPS' in queue:
+            user = str(cfg['asops']['user'])
+            pwd = base64.b64decode(str(cfg['asops']['passwd']))
+            short_desc = short_desc
+            opened_for = task_for
+            category = 'inc_rackspace'
+            sub_category = 'inc_nextgen'
+            sub_subcategory = 'inc_operational'
+            assignment_group = 'Automation Services Operations'
+            contact_type = 'Other'
+            other = 'Slack ticket'
+            urgency = '1'
+            impact = '2'
+
     log_file = 'log'
     with open(log_file,'r+') as f:
         existing = f.read().splitlines()
