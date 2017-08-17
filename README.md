@@ -6,4 +6,4 @@ The slash commands available in Slack allow Slack to post a payload to a designa
 
 Currently running this behind nginx, as Slack requires a proper SSL connection.  The authenticity token generated when building your Slack Slash command must be added to the app route to prevent calls not originating from your integration from being processed.
 
-The /test URL will return to the form values of the payload sent to Slack using the `/snowtest` command in Slack.
+The /test URL will return the form values of the payload sent to Slack using the `/snowtest` command in Slack.
