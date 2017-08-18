@@ -83,7 +83,7 @@ def create_incident(task_for, short_desc, queue):
         incident_number = r['result'][0]['display_value']
         incident_link = 'https://rackspace.service-now.com/nav_to.do?uri=incident.do?sys_id={0}'.format(r['result'][0]['sys_id'])
         f.write('{0},{1},{2},{3}\n'.format(incident_number, task_for, short_desc, time_now))
-        return '<{1}|{0}> has been created in Service-Now.  You may add information or update the urgency at the link provided.'.format(incident_number, incident_link)
+        return '<{1}|{0}> has been created in Service-Now.  You are encouraged to add information and update the urgency at the link provided.'.format(incident_number, incident_link)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
