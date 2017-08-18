@@ -46,13 +46,27 @@ def create_incident(task_for, short_desc, queue):
             urgency = '1'
             impact = '2'
 
+        elif 'Service Desk' in queue:
+            user = str(cfg['sdesk']['user'])
+            pwd = base64.b64decode(str(cfg['sdesk']['passwd']))
+            short_desc = short_desc
+            opened_for = task_for
+            category = 'inc_cat_other'
+            sub_category = 'inc_sub_other'
+            sub_subcategory = 'inc_subsub_other'
+            assignment_group = 'Service Desk'
+            contact_type = 'Other'
+            other = 'Slack ticket'
+            urgency = '3'
+            impact = '3'
+
     log_file = 'log'
     with open(log_file,'r+') as f:
         existing = f.read().splitlines()
         #print existing
         for item in existing:
-            if short_desc in item:
-                incident_exists = 'It appears you already have an open incident, {0}, for this problem.  Try searching Service-Now to check the status.'.format(item[0:10])
+            if task_for in item and short_desc in item:
+                incident_exists = 'It appears you already have an open incident <{0}|{1}> for this problem.'.format(item.split(',')[4],item.split(',')[0])
                 return incident_exists
                 #print 'it is in existing'
                 #sys.exit(0)
@@ -82,18 +96,20 @@ def create_incident(task_for, short_desc, queue):
         r = response.json()
         incident_number = r['result'][0]['display_value']
         incident_link = 'https://rackspace.service-now.com/nav_to.do?uri=incident.do?sys_id={0}'.format(r['result'][0]['sys_id'])
-        f.write('{0},{1},{2},{3}\n'.format(incident_number, task_for, short_desc, time_now))
+        f.write('{0},{1},{2},{3},{4}\n'.format(incident_number, task_for, short_desc, time_now, incident_link))
         return '<{1}|{0}> has been created in Service-Now.  You are encouraged to add information and update the urgency at the link provided.'.format(incident_number, incident_link)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--task_for")
     parser.add_argument("-d", "--short_desc")
+    parser.add_argument("-q", "--queue")
     args = parser.parse_args()
     task_for = args.task_for
     short_desc = args.short_desc
+    queue = args.queue
 
-    create_incident = create_incident(task_for, short_desc)
+    create_incident = create_incident(task_for, short_desc, queue)
     if 'already' in create_incident:
         print(create_incident)
     else:

@@ -42,6 +42,42 @@ def asops_ticket():
     incident = create_incident(task_for, short_desc, queue)
     return incident
 
+@app.route('/servicedesk', methods=['POST'])
+def sdesk_ticket():
+
+    conf_file = os.path.expanduser('~/snowconfig.yaml')
+    with open(conf_file,'r') as ymlfile:
+        cfg = yaml.load(ymlfile)
+        auth_token = str(cfg['sdesk']['auth'])
+
+    token = request.form['token']
+    if auth_token not in token:
+        abort(403)
+    slack_user = request.form['user_id']
+    task_for = get_user_id.get_snow_uid(get_user_id.get_user_id(slack_user))
+    short_desc = request.form['text']
+    queue = 'Service Desk'
+    incident = create_incident(task_for, short_desc, queue)
+    return incident
+
+@app.route('/servicedeskopenfor', methods=['POST'])
+def sdesk_ticket_openfor():
+
+    conf_file = os.path.expanduser('~/snowconfig.yaml')
+    with open(conf_file,'r') as ymlfile:
+        cfg = yaml.load(ymlfile)
+        auth_token = str(cfg['sdesk']['auth_openfor'])
+
+    token = request.form['token']
+    if auth_token not in token:
+        abort(403)
+    slack_user = request.form['user_id']
+    task_for = request.form['text'].split(' ', 1)[0]
+    short_desc = request.form['text'].split(' ', 1)[1]
+    queue = 'Service Desk'
+    incident = create_incident(task_for, short_desc, queue)
+    return incident
+
 @app.route('/test', methods=['GET', 'POST'])
 def test():
 
