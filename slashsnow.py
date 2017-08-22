@@ -21,7 +21,10 @@ def rackerex_ticket():
     task_for = get_user_id.get_snow_uid(get_user_id.get_user_id(slack_user))
     short_desc = request.form['text']
     queue = 'Racker Experience'
-    incident = create_incident(task_for, short_desc, queue)
+    try:
+        incident = create_incident(task_for, short_desc, queue)
+    except IOError as err:
+        incident = create_incident(task_for, short_desc, queue)
     return incident
 
 @app.route('/asops', methods=['POST'])
@@ -39,7 +42,10 @@ def asops_ticket():
     task_for = get_user_id.get_snow_uid(get_user_id.get_user_id(slack_user))
     short_desc = request.form['text']
     queue = 'ASOPS'
-    incident = create_incident(task_for, short_desc, queue)
+    try:
+        incident = create_incident(task_for, short_desc, queue)
+    except IOError as err:
+        incident = create_incident(task_for, short_desc, queue)
     return incident
 
 @app.route('/servicedesk', methods=['POST'])
@@ -57,7 +63,10 @@ def sdesk_ticket():
     task_for = get_user_id.get_snow_uid(get_user_id.get_user_id(slack_user))
     short_desc = request.form['text']
     queue = 'Service Desk'
-    incident = create_incident(task_for, short_desc, queue)
+    try:
+        incident = create_incident(task_for, short_desc, queue)
+    except IOError as err:
+        incident = create_incident(task_for, short_desc, queue)
     return incident
 
 @app.route('/servicedeskopenfor', methods=['POST'])
@@ -75,7 +84,10 @@ def sdesk_ticket_openfor():
     task_for = request.form['text'].split(' ', 1)[0]
     short_desc = request.form['text'].split(' ', 1)[1]
     queue = 'Service Desk'
-    incident = create_incident(task_for, short_desc, queue)
+    try:
+        incident = create_incident(task_for, short_desc, queue)
+    except IOError as err:
+        incident = create_incident(task_for, short_desc, queue)
     return incident
 
 @app.route('/test', methods=['GET', 'POST'])
