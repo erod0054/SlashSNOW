@@ -43,7 +43,7 @@ def create_incident(task_for, short_desc, queue):
             assignment_group = 'Automation Services Operations'
             contact_type = 'Other'
             other = 'Slack ticket'
-            urgency = '1'
+            urgency = '2'
             impact = '2'
 
         elif 'Service Desk' in queue:
